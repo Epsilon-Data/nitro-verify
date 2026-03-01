@@ -46,6 +46,10 @@
     "url": "git+https://github.com/Epsilon-Data/nitro-verify.git"
   },
   "homepage": "https://github.com/Epsilon-Data/nitro-verify#readme",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
+  },
   "bugs": {
     "url": "https://github.com/Epsilon-Data/nitro-verify/issues"
   },
