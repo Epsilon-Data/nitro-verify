@@ -1,5 +1,5 @@
 /**
- * Test script for @aspect-data/nitro-verify
+ * Test script for @epsilon-data/nitro-verify
  *
  * Uses a real AWS Nitro Enclave attestation document from production (JOB-MLAM9VY0).
  * Certificates are fresh (Feb 6 2026), so full verification should pass.
@@ -108,7 +108,7 @@ async function testVerificationWithWrongPcr() {
 }
 
 async function main() {
-  console.log("@aspect-data/nitro-verify — Test Suite\n");
+  console.log("@epsilon-data/nitro-verify — Test Suite\n");
 
   await testParsing();
   const fullResult = await testFullVerification();

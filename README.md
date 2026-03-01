@@ -1,4 +1,4 @@
-# @aspect-data/nitro-verify
+# @epsilon-data/nitro-verify
 
 Cryptographic verification of AWS Nitro Enclave attestation documents — works in browsers (WebCrypto) and Node.js.
 
@@ -15,7 +15,7 @@ This library parses and cryptographically verifies those attestation documents.
 ## Install
 
 ```bash
-npm install @aspect-data/nitro-verify
+npm install @epsilon-data/nitro-verify
 ```
 
 ## Usage
@@ -23,7 +23,7 @@ npm install @aspect-data/nitro-verify
 ### Browser / Node.js Library
 
 ```typescript
-import { verifyAttestation } from "@aspect-data/nitro-verify";
+import { verifyAttestation } from "@epsilon-data/nitro-verify";
 
 const result = await verifyAttestation(attestationBase64, {
   // Optional: compare PCR values against expected

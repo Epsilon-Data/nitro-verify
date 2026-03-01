@@ -1,5 +1,5 @@
 /**
- * CLI for @aspect-data/nitro-verify
+ * CLI for @epsilon-data/nitro-verify
  *
  * Usage:
  *   nitro-verify <attestation.b64>                          # verify from file
@@ -43,7 +43,7 @@ function printUserData(userData: Record<string, unknown> | null) {
 
 function printUsage() {
   console.log(`
-${BOLD}@aspect-data/nitro-verify${RESET} — AWS Nitro Enclave Attestation Verifier
+${BOLD}@epsilon-data/nitro-verify${RESET} — AWS Nitro Enclave Attestation Verifier
 
 ${BOLD}USAGE${RESET}
   nitro-verify <file.b64>              Verify attestation from file
@@ -175,7 +175,7 @@ async function runVerification(doc: string, opts: ReturnType<typeof parseArgs>) 
       : undefined;
 
   if (!opts.json) {
-    console.log(`\n${BOLD}@aspect-data/nitro-verify${RESET} — AWS Nitro Enclave Attestation Verifier\n`);
+    console.log(`\n${BOLD}@epsilon-data/nitro-verify${RESET} — AWS Nitro Enclave Attestation Verifier\n`);
     if (opts.allowExpired) {
       console.log(`  ${YELLOW}! Certificate date validation skipped (--allow-expired)${RESET}\n`);
     }
