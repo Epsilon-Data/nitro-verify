@@ -1,0 +1,61 @@
+{
+  "name": "@aspect-data/nitro-verify",
+  "version": "0.1.0",
+  "description": "Browser-based AWS Nitro Enclave attestation verification",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "nitro-verify": "./dist/cli.js"
+  },
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "tsx test/verify.test.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "aws",
+    "nitro",
+    "enclave",
+    "attestation",
+    "verification",
+    "cose",
+    "cbor",
+    "webcrypto"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Epsilon-Data/nitro-verify.git"
+  },
+  "homepage": "https://github.com/Epsilon-Data/nitro-verify#readme",
+  "bugs": {
+    "url": "https://github.com/Epsilon-Data/nitro-verify/issues"
+  },
+  "dependencies": {
+    "cborg": "^4.2.0",
+    "@peculiar/x509": "^1.12.0"
+  },
+  "devDependencies": {
+    "tsup": "^8.0.0",
+    "tsx": "^4.0.0",
+    "typescript": "^5.5.0"
+  }
+}
