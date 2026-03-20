@@ -69,9 +69,22 @@ async function getRootCert() {
 export async function verifyCertificateChain(
   leafCertDer: Uint8Array,
   cabundle: Uint8Array[],
-  options?: { allowExpired?: boolean }
+  options?: { allowExpired?: boolean; customRootCertPem?: string }
 ): Promise<CertChainInfo> {
-  const { cert: rootCert, cn: rootCN, fingerprint: rootFingerprint } = await getRootCert();
+  let rootCert: x509.X509Certificate;
+  let rootCN: string;
+  let rootFingerprint: string;
+
+  if (options?.customRootCertPem) {
+    // DEV MODE: use custom root certificate instead of AWS root
+    const rootDerBytes = pemToDer(options.customRootCertPem);
+    rootCert = new x509.X509Certificate(toArrayBuffer(rootDerBytes));
+    rootCN = extractCN(rootCert.subject);
+    const rootHashBuf = await crypto.subtle.digest("SHA-256", rootCert.rawData);
+    rootFingerprint = uint8ArrayToHex(new Uint8Array(rootHashBuf));
+  } else {
+    ({ cert: rootCert, cn: rootCN, fingerprint: rootFingerprint } = await getRootCert());
+  }
 
   // Load leaf certificate
   const leafCert = new x509.X509Certificate(toArrayBuffer(leafCertDer));
