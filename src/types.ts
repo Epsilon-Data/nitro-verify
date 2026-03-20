@@ -45,5 +45,7 @@ export interface VerificationOptions {
   expectedOutputHash?: string | null;
   /** Skip certificate date validation (for verifying historical attestations with expired short-lived certs). */
   allowExpired?: boolean;
+  /** Custom root CA certificate PEM for dev/local attestation documents (replaces AWS root). */
+  customRootCertPem?: string;
   onStepUpdate?: (stepId: StepId, update: Partial<VerificationStep>) => void;
 }

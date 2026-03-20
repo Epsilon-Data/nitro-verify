@@ -119,7 +119,10 @@ export async function verifyAttestation(
       () => verifyCertificateChain(
         attestation!.certificate,
         attestation!.cabundle,
-        { allowExpired: options?.allowExpired }
+        {
+          allowExpired: options?.allowExpired,
+          customRootCertPem: options?.customRootCertPem,
+        }
       ),
       (info) => `Chain depth: ${info.depth}, root: ${info.root.cn}`,
     );
