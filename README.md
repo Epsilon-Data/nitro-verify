@@ -107,15 +107,110 @@ interface VerificationResult {
 }
 ```
 
+### Full Type Reference
+
+```typescript
+// Verification step identifiers
+type StepId = "parse" | "cert-chain" | "signature" | "pcr-match" | "output-hash";
+type StepStatus = "pending" | "running" | "passed" | "failed" | "skipped";
+
+interface VerificationStep {
+  id: StepId;
+  label: string;
+  status: StepStatus;
+  message?: string;        // Human-readable result (e.g., "Chain depth: 6, root: aws.nitro-enclaves")
+  durationMs?: number;     // Time taken for this step
+}
+
+interface ParsedAttestation {
+  moduleId: string;        // Enclave instance ID (e.g., "i-076...aef-enc019...")
+  timestamp: number;       // Unix timestamp (ms)
+  digest: string;          // Hash algorithm ("SHA384")
+  pcrs: Record<number, string>;  // PCR0-15 as hex strings
+  userData: Record<string, unknown> | null;  // Application data (job_id, script_hash, etc.)
+  nonce: Uint8Array | null;
+  publicKey: Uint8Array | null;
+  certificate: Uint8Array;   // DER-encoded enclave certificate
+  cabundle: Uint8Array[];    // Certificate chain to AWS root
+  rawProtected: Uint8Array;  // COSE protected header
+  rawPayload: Uint8Array;    // COSE payload (for signature verification)
+  rawSignature: Uint8Array;  // ECDSA P-384 signature
+}
+
+interface CertChainInfo {
+  depth: number;           // Total chain length (typically 6)
+  root: { cn: string; fingerprint: string };  // AWS root cert info
+  intermediateCount: number;
+  endEntity: { cn: string; validFrom: string; validTo: string };  // Enclave cert
+}
+
+interface VerificationOptions {
+  expectedPcrs?: { pcr0?: string; pcr1?: string; pcr2?: string };
+  expectedOutputHash?: string;
+  allowExpired?: boolean;          // For historical attestations (~3hr cert lifetime)
+  customRootCertPem?: string;      // For local/dev attestation (replaces AWS root)
+  onStepUpdate?: (stepId: StepId, update: Partial<VerificationStep>) => void;
+}
+```
+
+## Use in Your Own Project
+
+This package works with **any** AWS Nitro Enclave attestation document, not just Epsilon.
+
+**Build a verification UI:**
+```typescript
+import { verifyAttestation } from "@epsilon-data/nitro-verify";
+
+// In a React component
+const [result, setResult] = useState(null);
+const verify = async (base64Doc) => {
+  const r = await verifyAttestation(base64Doc, {
+    allowExpired: true,
+    onStepUpdate: (id, update) => {
+      // Update UI progress bar per step
+    },
+  });
+  setResult(r);
+};
+```
+
+**Verify in a CI pipeline:**
+```typescript
+import { verifyAttestation } from "@epsilon-data/nitro-verify";
+
+const result = await verifyAttestation(attestationFromAPI, {
+  expectedPcrs: { pcr0: PUBLISHED_PCR0 },
+});
+if (!result.valid) throw new Error(`Attestation failed: ${result.error}`);
+```
+
+**Extract attestation metadata without full verification:**
+```typescript
+import { verifyAttestation } from "@epsilon-data/nitro-verify";
+
+const result = await verifyAttestation(base64Doc, { allowExpired: true });
+const { moduleId, timestamp, pcrs, userData } = result.attestation;
+console.log(`Job ${userData.job_id} ran at ${new Date(timestamp).toISOString()}`);
+```
+
+## Testing
+
+```bash
+npm test
+```
+
+Tests use a real AWS Nitro Enclave attestation document from production, verifying parsing, certificate chain, signature, and PCR matching.
+
 ## Requirements
 
 - **Browser**: Any browser with [WebCrypto API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API) (all modern browsers)
 - **Node.js**: 18+ (WebCrypto available globally)
+- **No native dependencies** — pure JavaScript/TypeScript, runs anywhere WebCrypto is available
 
 ## Dependencies
 
 - [`cborg`](https://github.com/rvagg/cborg) — CBOR encoding/decoding
-- [`@peculiar/x509`](https://github.com/nicolo-ribaudo/nicolo-ribaudo) — X.509 certificate parsing
+- [`@peculiar/x509`](https://github.com/PeculiarVentures/x509) — X.509 certificate parsing
 
 ## License
 

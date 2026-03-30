@@ -49,6 +49,7 @@ async function testFullVerification() {
   const result = await verifyAttestation(REAL_ATTESTATION_BASE64, {
     expectedPcrs: EXPECTED_PCRS,
     expectedOutputHash: EXPECTED_OUTPUT_HASH,
+    allowExpired: true,
     onStepUpdate: (stepId, update) => {
       if (update.status) {
         const icon = update.status === "passed" ? "\u2705" : update.status === "failed" ? "\u274C" : "\u23F3";
@@ -75,6 +76,7 @@ async function testFullVerification() {
 async function testVerificationWithoutPcrs() {
   console.log("=== Test 3: Verification Without Expected PCRs (skip PCR check) ===");
   const result = await verifyAttestation(REAL_ATTESTATION_BASE64, {
+    allowExpired: true,
     onStepUpdate: (stepId, update) => {
       if (update.status) {
         const icon = update.status === "passed" ? "\u2705" : update.status === "failed" ? "\u274C" : update.status === "skipped" ? "\u23ED\uFE0F" : "\u23F3";
@@ -91,6 +93,7 @@ async function testVerificationWithoutPcrs() {
 async function testVerificationWithWrongPcr() {
   console.log("=== Test 4: Verification With Wrong PCR (should fail) ===");
   const result = await verifyAttestation(REAL_ATTESTATION_BASE64, {
+    allowExpired: true,
     expectedPcrs: {
       pcr0: "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
     },
