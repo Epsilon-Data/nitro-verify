@@ -13,7 +13,7 @@ const VALID_PCR_LENGTHS = new Set([32, 48, 64]); // SHA256, SHA384, SHA512
 const MAX_PCR_INDEX = 31;
 const REQUIRED_DIGEST = "SHA384";
 const MAX_PAYLOAD_SIZE = 16384; // 16KB
-const MAX_USER_DATA_SIZE = 512;
+const MAX_USER_DATA_SIZE = 1024; // AWS attestation schema: user_data bstr .size (0..1024)
 const MAX_NONCE_SIZE = 512;
 const MAX_PUBLIC_KEY_SIZE = 1024;
 
